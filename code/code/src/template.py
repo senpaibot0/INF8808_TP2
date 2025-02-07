@@ -20,7 +20,6 @@ THEME = {
     'label_background_color': '#ffffff'
 }
 
-
 def create_template():
     '''
         Adds a new layout template to pio's templates.
@@ -43,6 +42,26 @@ def create_template():
         Also sets the colors for the bars in
         the bar chart to those defined in
         the THEME dictionary.
-
     '''
-    # TODO : Define a theme as defined above
+    template = {
+        'layout': {
+            'font': {
+                'family': THEME['font_family'],
+                'color': THEME['font_color']
+            },
+            'plot_bgcolor': THEME['background_color'],
+            'paper_bgcolor': THEME['background_color'],
+            'hovermode': 'closest',
+            'hoverlabel': {
+                'bgcolor': THEME['label_background_color'],
+                'font': {
+                    'size': THEME['label_font_size'],
+                    'color': THEME['font_color']
+                }
+            },
+            'colorway': THEME['bar_colors'],
+        }
+    }
+
+    pio.templates['custom_theme'] = template
+    pio.templates.default = 'custom_theme'

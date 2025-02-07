@@ -24,7 +24,17 @@ def summarize_lines(my_df):
     '''
     # TODO : Modify the dataframe, removing the line content and replacing
     # it by line count and percent per player per act
-    return my_df
+    players_occurrences = my_df.groupby(
+        ['Act', 'Player']).size().reset_index(name='PlayerLine')
+
+    lines_per_act = my_df.groupby('Act').size().reset_index(name='TotalLines')
+
+    merged_df = pd.merge(players_occurrences, lines_per_act, on='Act')
+
+    merged_df['PlayerPercent'] = (
+        merged_df['PlayerLine'] / merged_df['TotalLines']) * 100
+
+    return merged_df
 
 
 def replace_others(my_df):
@@ -50,12 +60,27 @@ def replace_others(my_df):
             The df with all players not in the top
             5 for the play grouped as 'OTHER'
     '''
-    # TODO : Replace players in each act not in the top 5 by a
-    # new player 'OTHER' which sums their line count and percentage
+    player_lines = my_df.groupby('Player')['PlayerLine'].sum()
+
+    top_players = player_lines.sort_values(ascending=False).head(5)
+
+    top_players_data = my_df[my_df['Player'].isin(top_players.index)]
+
+    other_players_data = my_df[~my_df.index.isin(top_players_data.index)]
+
+    aggregated_other_players = other_players_data.groupby('Act').agg({
+        'PlayerLine': 'sum',
+        'PlayerPercent': 'sum'
+    }).reset_index()
+
+    aggregated_other_players['Player'] = 'OTHER'
+
+    my_df = pd.concat(
+        [top_players_data, aggregated_other_players], ignore_index=True)
+
     return my_df
 
-
-def clean_names(my_df):
+def clean_names(my_df: pd.DataFrame):
     '''
         In the dataframe, formats the players'
         names so each word start with a capital letter.
@@ -63,5 +88,8 @@ def clean_names(my_df):
         Returns:
             The df with formatted names
     '''
-    # TODO : Clean the player names
+    def func(text): return ' '.join(word.capitalize() for word in text.split())
+
+    my_df['Player'] = my_df['Player'].apply(func)
+
     return my_df
