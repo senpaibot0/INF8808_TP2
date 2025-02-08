@@ -110,19 +110,20 @@ def init_app_layout(figure):
 )
 def radio_updated(mode, figure):
     '''
-        Updates the application after the radio input is modified.
+    Updates the application after the radio input is modified.
 
-        Args:
-            mode: The mode selected in the radio input.
-            figure: The figure as it is currently displayed
-        Returns:
-            new_fig: The figure to display after the change of radio input
-            mode: The new mode
+    Args:
+        mode: The mode selected in the radio input ('Count' or 'Percent').
+        figure: The figure as it is currently displayed.
+
+    Returns:
+        new_fig: The updated figure with data and axis according to the selected mode.
+        mode_text: A string indicating the current mode.
     '''
-    # TODO : Update the figure's data and y axis, as well as the informational
-    # text indicating the mode
-    new_fig = figure
-    return new_fig, ''
+    # Mettre à jour les données et l'axe Y en fonction du mode
+    new_fig = bar_chart.draw(figure, data, mode)
+
+    return new_fig, mode
 
 
 data = prep_data()
