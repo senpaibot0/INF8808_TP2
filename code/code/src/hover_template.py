@@ -26,9 +26,6 @@ def get_hover_template(name, mode):
         The hover template with the elements described above
     '''
 
-    # We could have used dash here but this way is more familiar for us
-    # also I am not using the constants provided in the modes.py throughout
-    # the tp because our columns in the dataframe do not have the same labels
     if mode.lower() == 'count':
         hover_template = (
             "<b><span style='font-family: Grenze Gotisch; font-size: 24px; color: black;'>Act: %{x}</span></b><br>" +
